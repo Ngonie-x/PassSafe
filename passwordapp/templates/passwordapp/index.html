@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <div class="alert alert-success text-center alert-dismissible fade show" role="alert">
+                <strong>{{ message|safe }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+<h1 class="text-center display-4 text-light">PassSafe</h1>
+<p class="tagline text-center text-light">a Django password vault application</p>
+<div class="container d-flex justify-content-center p-4 bg-light">
+    <form class="post-form mx-auto" method="post">
+        <div class="form-group">
+            {{password_form.site_url}}
+        </div>
+        <div class="form-group">
+            {{password_form.username}}
+        </div>
+        <div class="form-group">
+            {{password_form.site_password}}
+        </div>
+        {% csrf_token %}
+        <input class="btn btn-primary btn-block" type="submit" value="Submit">
+    </form>
+</div>
+
+<div class="container jumbotron">
+
+    {% if password_objs %}
+        <ul class="list-group">        
+        {% for password_obj in password_objs %}
+            <li class="list-group-item">
+                <ul class="list-group list-group-horizontal-lg" >
+                    <li class="list-group-item">
+                        <a href="{{password_obj.site_url}}">{{password_obj.site_url|truncatechars:20}} </a>
+                    </li>
+                    
+                    <li class="list-group-item">
+                        <input type="password" class="form-control" name="password" id="pass-{{password_obj.id}}" value="{{ password_obj.site_password }}">
+                    </li>
+                    <li class="list-group-item">
+                        <input type="checkbox" id="{{password_obj.id}}" onclick="myFunction(this.id)"> Show Password
+                    </li>
+                    <li class="list-group-item">
+                        User: <strong>{{ password_obj.username }}</strong>
+                    </li>
+                </ul>
+            </li>
+        {% endfor %}
+        </ul>
+
+    {% endif %}
+
+</div>
+
+<script>
+    function myFunction(id) {
+        var x = document.getElementById("pass-"+id);
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+        }
+      } 
+</script>
+
+
+
+
+
+{% endblock content %}
